@@ -20,7 +20,7 @@ import java.net.URL;
 
 /**
  * A class to wrap access to multiple class loaders making them work as one
- *
+ * 封装对多个类加载器的访问的类，使它们作为一个类装入器工作
  * @author Clinton Begin
  */
 public class ClassLoaderWrapper {
@@ -30,6 +30,8 @@ public class ClassLoaderWrapper {
 
   ClassLoaderWrapper() {
     try {
+      //default级别的构造方法
+      // 这个ClassLoader.getSystemClassLoader()方法就是会加载classpath下的class文件
       systemClassLoader = ClassLoader.getSystemClassLoader();
     } catch (SecurityException ignored) {
       // AccessControlException on Google App Engine
@@ -69,12 +71,13 @@ public class ClassLoaderWrapper {
 
   /**
    * Get a resource from the classpath, starting with a specific class loader
-   *
+   * 被调用的获取流的方法
    * @param resource    - the resource to find
    * @param classLoader - the first class loader to try
    * @return the stream or null
    */
   public InputStream getResourceAsStream(String resource, ClassLoader classLoader) {
+    //这里有个参数getClassLoaders(null)
     return getResourceAsStream(resource, getClassLoaders(classLoader));
   }
 
@@ -109,6 +112,7 @@ public class ClassLoaderWrapper {
    * @return the resource or null
    */
   InputStream getResourceAsStream(String resource, ClassLoader[] classLoader) {
+    //遍历刚获取的五个classloader
     for (ClassLoader cl : classLoader) {
       if (null != cl) {
 
@@ -117,6 +121,7 @@ public class ClassLoaderWrapper {
 
         // now, some class loaders want this leading "/", so we'll add it and try again if we didn't find the resource
         if (null == returnValue) {
+          //这个是因为有的是绝对路径，有的是相对classpath的路径
           returnValue = cl.getResourceAsStream("/" + resource);
         }
 
@@ -129,7 +134,7 @@ public class ClassLoaderWrapper {
   }
 
   /**
-   * Get a resource as a URL using the current class path
+   *  Get a resource as a URL using the current class path
    *
    * @param resource    - the resource to locate
    * @param classLoader - the class loaders to examine
@@ -201,12 +206,23 @@ public class ClassLoaderWrapper {
 
   }
 
+  /**
+   * 这个方法很重要
+   * 注意在获取class的时候需要注意：1.应用是使用谁去加载的class2.注意在使用的时候路径是不是绝对或相对路径
+   * @param classLoader
+   * @return
+   */
   ClassLoader[] getClassLoaders(ClassLoader classLoader) {
     return new ClassLoader[]{
+        //null
         classLoader,
+        //这个也没看到人给值，等会往后看看
         defaultClassLoader,
+        //这个就在java ee的时候能获取ApplicationClassLoader来加载class
         Thread.currentThread().getContextClassLoader(),
+        //一样是获取
         getClass().getClassLoader(),
+        // java se 的情况下下面的可以用
         systemClassLoader};
   }
 

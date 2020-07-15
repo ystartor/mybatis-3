@@ -60,7 +60,13 @@ public class SqlSessionFactoryBuilder {
     }
   }
 
+  /**
+   * 重载方法
+   * @param inputStream
+   * @return
+   */
   public SqlSessionFactory build(InputStream inputStream) {
+    //将environment和properties设置为null
     return build(inputStream, null, null);
   }
 
@@ -72,8 +78,10 @@ public class SqlSessionFactoryBuilder {
     return build(inputStream, null, properties);
   }
 
+  //重载方法
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
+      //将xml转换成javabean的形式，去看下XMLConfigBuilder的数据结构
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
       return build(parser.parse());
     } catch (Exception e) {

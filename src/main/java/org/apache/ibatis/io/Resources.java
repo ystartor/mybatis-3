@@ -97,6 +97,7 @@ public class Resources {
    * @throws java.io.IOException If the resource cannot be found or read
    */
   public static InputStream getResourceAsStream(String resource) throws IOException {
+    // 调用重载方法并把加载器设置为null
     return getResourceAsStream(null, resource);
   }
 
@@ -109,6 +110,9 @@ public class Resources {
    * @throws java.io.IOException If the resource cannot be found or read
    */
   public static InputStream getResourceAsStream(ClassLoader loader, String resource) throws IOException {
+    //调用classLoaderWrapper里面的getResourceAsStream(resource,loader)方法
+    // 这个classLoaderWrapper是个什么样子？私有的静态对象属性，就是一个几种类加载器的包装类
+    // 为什么需要这个包装类呢？为什么我们不直接使用ClassLoader呢？
     InputStream in = classLoaderWrapper.getResourceAsStream(resource, loader);
     if (in == null) {
       throw new IOException("Could not find resource " + resource);

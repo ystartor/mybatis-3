@@ -53,6 +53,7 @@ import org.apache.ibatis.type.JdbcType;
  */
 public class XMLConfigBuilder extends BaseBuilder {
 
+  //
   private boolean parsed;
   private final XPathParser parser;
   private String environment;
@@ -78,16 +79,26 @@ public class XMLConfigBuilder extends BaseBuilder {
     this(inputStream, environment, null);
   }
 
+  //通过这个构造来创建这个对象
   public XMLConfigBuilder(InputStream inputStream, String environment, Properties props) {
+    // XPathParser 看一下这个类
+    // XMLMapperEntityResolver 还有这个类，本质上就是检测xml是否符合dtd规范的
     this(new XPathParser(inputStream, true, props, new XMLMapperEntityResolver()), environment, props);
   }
 
+  // 这个parser是个什么还要再看看
   private XMLConfigBuilder(XPathParser parser, String environment, Properties props) {
+    // 这个还有个父类呢，看一下去,组装了一个BaseBuilder
     super(new Configuration());
+    //
     ErrorContext.instance().resource("SQL Mapper Configuration");
+    // 设置值
     this.configuration.setVariables(props);
+    // 设置文件未解析
     this.parsed = false;
+    //初始化环境
     this.environment = environment;
+    //这个xpathParser是个什么，去看一下
     this.parser = parser;
   }
 

@@ -152,10 +152,13 @@ public class TypeAliasRegistry {
       throw new TypeException("The parameter alias cannot be null");
     }
     // issue #748
+    // 变成小写字母
     String key = alias.toLowerCase(Locale.ENGLISH);
+    // 包含某个字符
     if (typeAliases.containsKey(key) && typeAliases.get(key) != null && !typeAliases.get(key).equals(value)) {
       throw new TypeException("The alias '" + alias + "' is already mapped to the value '" + typeAliases.get(key).getName() + "'.");
     }
+    // 添加别名
     typeAliases.put(key, value);
   }
 

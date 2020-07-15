@@ -32,10 +32,14 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  * @author Clinton Begin
  */
 public abstract class BaseBuilder {
+  //configuration
   protected final Configuration configuration;
+  //别名
   protected final TypeAliasRegistry typeAliasRegistry;
+  //类型处理器——不知道存的是什么
   protected final TypeHandlerRegistry typeHandlerRegistry;
 
+  //构建一个初始化的baseBuilder
   public BaseBuilder(Configuration configuration) {
     this.configuration = configuration;
     this.typeAliasRegistry = this.configuration.getTypeAliasRegistry();
